@@ -8,6 +8,10 @@ from model import *
 if __name__ == "__main__":
     image_annotation_mapping = get_image_annot_mapping()
     train_data, validation_data, test_data = train_test_split(image_annotation_mapping, stratify = runtime_parameters.label_column_name)
+    print("Data Size : ", image_annotation_mapping.shape)
+    print("Train Data Size : ", train_data.shape)
+    print("Validation Data Size : ", validation_data.shape)
+    print("Test Data Size : ", test_data.shape)
     onehot_encoder = OneHotEncoder(handle_unknown='ignore')
     onehot_encoder.fit(np.array(train_data[runtime_parameters.label_column_name].tolist()).reshape(-1,1))
     train_dataset = Dataset(
@@ -37,3 +41,4 @@ if __name__ == "__main__":
     print("Catgories : ", len(onehot_encoder.categories_[0]))
     object_detection_model = ObjectDetectionCNN(1, len(onehot_encoder.categories_[0]))
     object_detection_model, history = train(object_detection_model, train_dataloader, validation_dataloader, len(onehot_encoder.categories_[0]))
+    plot_loss(history)

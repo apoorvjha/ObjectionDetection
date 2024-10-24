@@ -22,7 +22,7 @@ def train(model, train_data, validation_data, num_classes):
             loss = loss_fn(bbox_prediction, bbox, label_prediction, label)
             running_loss_train += loss.item()
             
-            if idx%100 == 0:
+            if idx%10 == 0:
                 print(f"\t############# [TRAIN {idx + 1}] : Loss = {loss.item()}")
 
             loss.backward()
@@ -43,7 +43,7 @@ def train(model, train_data, validation_data, num_classes):
 
                 loss = loss_fn(bbox_prediction, bbox, label_prediction, label)
                 running_loss_val += loss.item()
-                if idx%100 == 0:
+                if idx%10 == 0:
                     print(f"\t############# [Validation {idx + 1}] : Loss = {loss.item()}")
             count += 1
 

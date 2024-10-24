@@ -186,4 +186,14 @@ def train_test_split(image_annotation_mapping, stratify = None):
     test_data = pd.concat(test_data, axis = 0, ignore_index=True)
 
     return train_data, validation_data, test_data
+
+def plot_loss(history):
+    plt.title("Training vs Validation Loss")
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.plot(history["train_loss"], label = "Train Loss")
+    plt.plot(history["val_loss"], label = "Validation Loss")
+    plt.savefig("loss_history.jpg")
+
         

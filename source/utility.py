@@ -103,7 +103,8 @@ def preprocess(
 
         image = cv2.resize(image, resize_shape)
     if convert2gray:
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        if len(image.shape) == 3:
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     
     if apply_smoothing:
         # Apply Gaussian smoothing
@@ -129,6 +130,7 @@ def read_image(image_path, annotations_path, preprocess_image = True):
             apply_smoothing = runtime_parameters.apply_smoothing,
             contrast_streching = runtime_parameters.contrast_streching
         )
+    image = image.reshape(-1, runtime_parameters.resize_shape[0], runtime_parameters.resize_shape[1])
     return image, bbox
 
 def get_image_annot_mapping():
@@ -141,9 +143,9 @@ def train_test_split(image_annotation_mapping, stratify = None):
     train_data = []
     validation_data = []
     test_data = []
-    if stratify is None:
+    if stratify is not None:
         for category in image_annotation_mapping[stratify].unique().tolist():
-            category_data = image_annotation_mapping[image_annotation_mapping[stratify] == category]
+            category_data = image_annotation_mapping[image_annotation_mapping[stratify] == category].reset_index(drop = True)
             index = category_data.index.tolist()
             train_index = np.random.choice(
                 index,
@@ -157,7 +159,6 @@ def train_test_split(image_annotation_mapping, stratify = None):
                 replace = False
             )
             test_index = np.array([idx for idx in remaining_index if idx not in validation_index])
-            
             train_data.append(category_data.iloc[train_index])
             validation_data.append(category_data.iloc[validation_index])
             test_data.append(category_data.iloc[test_index])

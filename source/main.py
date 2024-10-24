@@ -34,5 +34,6 @@ if __name__ == "__main__":
         onehot_encoder
     )
     test_dataloader = DataLoader(test_dataset, batch_size=runtime_parameters.batch_size, shuffle=False)
-    object_detection_model = ObjectDetectionCNN()
-    train(object_detection_model, train_dataloader, validation_dataloader, len(onehot_encoder.categories_))
+    print("Catgories : ", len(onehot_encoder.categories_[0]))
+    object_detection_model = ObjectDetectionCNN(1, len(onehot_encoder.categories_[0]))
+    object_detection_model, history = train(object_detection_model, train_dataloader, validation_dataloader, len(onehot_encoder.categories_[0]))

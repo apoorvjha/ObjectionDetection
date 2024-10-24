@@ -17,12 +17,13 @@ def train(model, train_data, validation_data, num_classes):
 
             optimizer.zero_grad()
 
-            prediction = model(image)
-            bbox_prediction = prediction[ : , : 4]
-            label_prediction = prediction[ : , 4 : ]
+            bbox_prediction, label_prediction = model(image)
 
             loss = loss_fn(bbox_prediction, bbox, label_prediction, label)
             running_loss_train += loss.item()
+            
+            if idx%100 == 0:
+                print(f"\t############# [TRAIN {idx + 1}] : Loss = {loss.item()}")
 
             loss.backward()
             optimizer.step()
@@ -38,16 +39,16 @@ def train(model, train_data, validation_data, num_classes):
             label = data["label"].to(device = runtime_parameters.device)
 
             with torch.no_grad():
-                prediction = model(image)
-                bbox_prediction = prediction[ : , : 4]
-                label_prediction = prediction[ : , 4 : ]
+                bbox_prediction, label_prediction = model(image)
 
                 loss = loss_fn(bbox_prediction, bbox, label_prediction, label)
                 running_loss_val += loss.item()
+                if idx%100 == 0:
+                    print(f"\t############# [Validation {idx + 1}] : Loss = {loss.item()}")
             count += 1
 
         loss_history["val_loss"].append(running_loss_val / count)
 
-        print(f"[EPOCH = {epoch}] => Train Loss : {loss_history['train_loss'][-1]} | Validation Loss : {loss_history['val_loss'][-1]}")
+        print(f"[EPOCH = {epoch + 1}] => Train Loss : {loss_history['train_loss'][-1]} | Validation Loss : {loss_history['val_loss'][-1]}")
     return model, loss_history
 

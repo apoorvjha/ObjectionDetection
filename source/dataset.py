@@ -20,5 +20,5 @@ class Dataset:
         return {
             "image" : torch.tensor(image, dtype = torch.float32),
             "bbox" : torch.tensor(bbox, dtype = torch.float32),
-            "label" : torch.tensor(self.onehot_encoder.transform(np.array([label]).reshape(-1,1)).toarray(), dtype = torch.float32)
+            "label" : torch.tensor(self.onehot_encoder.transform(np.array([label]).reshape(-1,1)).toarray(), dtype = torch.float32).view(-1)
         }

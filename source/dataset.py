@@ -1,4 +1,5 @@
 from utility import *
+import torch
 
 class Dataset:
     def __init__(self, data, image_path_column, annotation_path_column, label_column, onehot_encoder):
@@ -17,7 +18,7 @@ class Dataset:
         image, bbox = read_image(image_path, annotation_path, preprocess_image = True)
         label = self.data[self.label_column].iloc[idx]
         return {
-            "image" : image,
-            "bbox" : bbox,
-            "label" : self.onehot_encoder.transform(np.array([label]).reshape(-1,1)).toarray()
+            "image" : torch.tensor(image, dtype = torch.float32),
+            "bbox" : torch.tensor(bbox, dtype = torch.float32),
+            "label" : torch.tensor(self.onehot_encoder.transform(np.array([label]).reshape(-1,1)).toarray(), dtype = torch.float32)
         }

@@ -1,3 +1,5 @@
+import torch
+
 resize_shape = (128,128)
 convert2gray = True
 apply_smoothing = True
@@ -13,3 +15,6 @@ train_size = 0.8
 val_size = 0.1
 test_size = 0.1
 batch_size = 64
+device = ['cuda' if torch.cuda.is_available() else 'cpu'][0]
+learning_rate = 1e-3
+epochs=20

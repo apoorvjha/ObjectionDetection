@@ -19,3 +19,5 @@ device = ['cuda' if torch.cuda.is_available() else 'cpu'][0]
 learning_rate = 1e-3
 epochs=120
 patience = 10
+t_max = 30
+eta_min = 1e-1

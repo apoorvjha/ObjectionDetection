@@ -9,7 +9,7 @@ def train(model, train_data, validation_data, num_classes):
     loss_history = {"train_loss" : [], "val_loss" : []}
     model = model.to(device = runtime_parameters.device)
     patience = runtime_parameters.patience
-    scheduler = lr_scheduler.LinearLR(optimizer, start_factor=1.0, end_factor=0.5, total_iters=30)
+    scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max = runtime_parameters.t_max, eta_min = runtime_parameters.eta_min)
     for epoch in range(runtime_parameters.epochs):
         if patience < 0:
             print("Early Stopping!")

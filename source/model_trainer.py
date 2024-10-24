@@ -1,13 +1,19 @@
 import torch
 import runtime_parameters
 from loss_function import *
+import torch.optim.lr_scheduler as lr_scheduler
 
 def train(model, train_data, validation_data, num_classes):
     optimizer = torch.optim.Adam(model.parameters(), lr = runtime_parameters.learning_rate)
     loss_fn = ObjectDetectionLoss(num_classes)
     loss_history = {"train_loss" : [], "val_loss" : []}
     model = model.to(device = runtime_parameters.device)
+    patience = runtime_parameters.patience
+    scheduler = lr_scheduler.LinearLR(optimizer, start_factor=1.0, end_factor=0.5, total_iters=30)
     for epoch in range(runtime_parameters.epochs):
+        if patience < 0:
+            print("Early Stopping!")
+            break
         running_loss_train = 0.0
         count = 0
         for idx, data in enumerate(train_data):
@@ -30,6 +36,7 @@ def train(model, train_data, validation_data, num_classes):
             count += 1
 
         loss_history["train_loss"].append(running_loss_train / count)
+        scheduler.step()
 
         running_loss_val = 0.0
         count = 0
@@ -50,5 +57,9 @@ def train(model, train_data, validation_data, num_classes):
         loss_history["val_loss"].append(running_loss_val / count)
 
         print(f"[EPOCH = {epoch + 1}] => Train Loss : {loss_history['train_loss'][-1]} | Validation Loss : {loss_history['val_loss'][-1]}")
+
+        if epoch > 1:
+            if loss_history['val_loss'][-1] == loss_history['val_loss'][-2]:
+                patience -= 1
     return model, loss_history
 

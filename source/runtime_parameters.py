@@ -17,4 +17,5 @@ test_size = 0.1
 batch_size = 64
 device = ['cuda' if torch.cuda.is_available() else 'cpu'][0]
 learning_rate = 1e-3
-epochs=20
+epochs=120
+patience = 10

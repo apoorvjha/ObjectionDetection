@@ -5,3 +5,4 @@ caltech-101/caltech-101/*.m
 source/*.jpg
 source/*.png
 source/__pycache__
+object_detection_env

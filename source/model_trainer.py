@@ -59,7 +59,9 @@ def train(model, train_data, validation_data, num_classes):
         print(f"[EPOCH = {epoch + 1}] => Train Loss : {loss_history['train_loss'][-1]} | Validation Loss : {loss_history['val_loss'][-1]}")
 
         if epoch > 1:
-            if loss_history['val_loss'][-1] == loss_history['val_loss'][-2]:
+            if loss_history['val_loss'][-1] >= loss_history['val_loss'][-2]:
                 patience -= 1
+            else:
+                patience = runtime_parameters.patience
     return model, loss_history
 

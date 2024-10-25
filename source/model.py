@@ -26,29 +26,29 @@ class ObjectDetectionCNN(nn.Module):
         self.softmax = nn.Softmax(dim=1)
         self.flatten = nn.Flatten()
     def forward(self, image):
-        image = self.relu(self.conv1(image))
-        image = self.relu(self.conv2(image))
+        image = nn.Dropout(p=0.2)(self.relu(self.conv1(image)))
+        image = nn.Dropout(p=0.2)(self.relu(self.conv2(image)))
         image = self.pool1(image)
 
-        image = self.relu(self.conv3(image))
-        image = self.relu(self.conv4(image))
+        image = nn.Dropout(p=0.2)(self.relu(self.conv3(image)))
+        image = nn.Dropout(p=0.2)(self.relu(self.conv4(image)))
         image = self.pool2(image)
 
-        image = self.relu(self.conv5(image))
-        image = self.relu(self.conv6(image))
+        image = nn.Dropout(p=0.2)(self.relu(self.conv5(image)))
+        image = nn.Dropout(p=0.2)(self.relu(self.conv6(image)))
         image = self.pool3(image)
 
-        image = self.relu(self.conv7(image))
-        image = self.relu(self.conv8(image))
+        image = nn.Dropout(p=0.2)(self.relu(self.conv7(image)))
+        image = nn.Dropout(p=0.2)(self.relu(self.conv8(image)))
         image = self.pool4(image)
         
         image = self.flatten(image)
 
-        image = self.relu(self.fc1(image))
-        image = self.relu(self.fc2(image))
-        cls = self.softmax(self.fc_cls(image))
+        image = nn.Dropout(p=0.2)(self.relu(self.fc1(image)))
+        image = nn.Dropout(p=0.2)(self.relu(self.fc2(image)))
+        category = self.softmax(self.fc_cls(image))
 
-        image = self.relu(self.fc3(image))
+        image = nn.Dropout(p=0.2)(self.relu(self.fc3(image)))
         bbox = self.relu(self.fc_bbox(image))
 
-        return bbox, cls
+        return bbox, category

@@ -56,6 +56,7 @@ class ObjectDetectionCNN(nn.Module):
     
 class ObjectDetectionVGG(nn.Module):
     def __init__(self, input_channels, n_classes):
+        super(ObjectDetectionVGG, self).__init__()
         self.input_proj = nn.Conv2d(input_channels, 3, kernel_size=(3,3), padding="same")
         self.vgg = models.vgg19(pretrained=True)
         self.vgg19.classifier[6] = nn.Linear(self.vgg19.classifier[6].in_features, n_classes)

@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torchvision import models
 
 class ObjectDetectionCNN(nn.Module):
     def __init__(self, input_channels, n_classes):
@@ -52,3 +53,30 @@ class ObjectDetectionCNN(nn.Module):
         bbox = self.relu(self.fc_bbox(image))
 
         return bbox, category
+    
+class ObjectDetectionVGG(nn.Module):
+    def __init__(self, input_channels, n_classes):
+        self.input_proj = nn.Conv2d(input_channels, 3, kernel_size=(3,3), padding="same")
+        self.vgg = models.vgg19(pretrained=True)
+        self.vgg19.classifier[6] = nn.Linear(self.vgg19.classifier[6].in_features, n_classes)
+        
+        for param in self.vgg19.features.parameters():
+            param.requires_grad = False
+
+        for param in self.vgg19.classifier.parameters():
+            param.requires_grad = True
+
+        self.fc_bbox = nn.Linear(n_classes, 4)
+        self.relu = nn.ReLU() 
+        self.softmax = nn.Softmax(dim=1)
+
+    def forward(self, image):
+        image = self.input_proj(image)
+
+        category = self.softmax(image)
+        bbox = self.relu(self.fc_bbox(image))
+
+        return bbox, category
+
+
+

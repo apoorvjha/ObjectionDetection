@@ -187,13 +187,19 @@ def train_test_split(image_annotation_mapping, stratify = None):
 
     return train_data, validation_data, test_data
 
-def plot_loss(history):
+def plot_loss(history, filename):
+    plt.figure(figsize=(10, 5))  # Optional: Set figure size for better visibility
     plt.title("Training vs Validation Loss")
     plt.xlabel("Epochs")
     plt.ylabel("Loss")
+    
+    # Plot training and validation loss
+    plt.plot(history["train_loss"], label="Train Loss", color='blue')
+    plt.plot(history["val_loss"], label="Validation Loss", color='orange')
+    
     plt.legend()
-    plt.plot(history["train_loss"], label = "Train Loss")
-    plt.plot(history["val_loss"], label = "Validation Loss")
-    plt.savefig("loss_history.jpg")
+    plt.grid()  # Optional: Add a grid for better readability
+    plt.savefig(filename)
+    plt.close()  # Close the figure to free up memory
 
         

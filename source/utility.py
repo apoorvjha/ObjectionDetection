@@ -155,7 +155,7 @@ def train_test_split(image_annotation_mapping, stratify = None):
             remaining_index = [idx for idx in index if idx not in train_index]
             validation_index = np.random.choice(
                 remaining_index,
-                size = int(len(remaining_index) * runtime_parameters.val_size),
+                size = int(len(index) * runtime_parameters.val_size),
                 replace = False
             )
             test_index = np.array([idx for idx in remaining_index if idx not in validation_index])
@@ -172,7 +172,7 @@ def train_test_split(image_annotation_mapping, stratify = None):
         remaining_index = [idx for idx in index if idx not in train_index]
         validation_index = np.random.choice(
             remaining_index,
-            size = int(len(remaining_index) * runtime_parameters.val_size),
+            size = int(len(index) * runtime_parameters.val_size),
             replace = False
         )
         test_index = np.array([idx for idx in remaining_index if idx not in validation_index])

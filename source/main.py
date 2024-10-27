@@ -4,6 +4,7 @@ from sklearn.preprocessing import OneHotEncoder
 from torch.utils.data import DataLoader
 from model_trainer import *
 from model import *
+from model_evaluator import *
 
 if __name__ == "__main__":
     image_annotation_mapping = get_image_annot_mapping()
@@ -43,7 +44,9 @@ if __name__ == "__main__":
     object_detection_model = ObjectDetectionCNN(1, len(onehot_encoder.categories_[0]))
     object_detection_model, history = train(object_detection_model, train_dataloader, validation_dataloader, len(onehot_encoder.categories_[0]))
     plot_loss(history, "CNN_Loss_Plt.jpg")
+    evaluate(object_detection_model,test_dataloader,len(onehot_encoder.categories_[0]))
 
     object_detection_model = ObjectDetectionVGG(1, len(onehot_encoder.categories_[0]))
     object_detection_model, history = train(object_detection_model, train_dataloader, validation_dataloader, len(onehot_encoder.categories_[0]))
     plot_loss(history, "VGG_Loss_Plt.jpg")
+    evaluate(object_detection_model,test_dataloader,len(onehot_encoder.categories_[0]))

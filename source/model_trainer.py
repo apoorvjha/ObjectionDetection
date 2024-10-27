@@ -5,7 +5,7 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 def train(model, train_data, validation_data, num_classes):
     optimizer = torch.optim.Adam(model.parameters(), lr = runtime_parameters.learning_rate)
-    loss_fn = ObjectDetectionLoss(num_classes)
+    loss_fn = ObjectDetectionLoss(num_classes, runtime_parameters.lambda_box, runtime_parameters.lambda_cls)
     loss_history = {"train_loss" : [], "val_loss" : []}
     model = model.to(device = runtime_parameters.device)
     patience = runtime_parameters.patience

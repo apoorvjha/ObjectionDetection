@@ -5,6 +5,7 @@ from torchvision import models
 class ObjectDetectionCNN(nn.Module):
     def __init__(self, input_channels, n_classes):
         super(ObjectDetectionCNN, self).__init__()
+        self.name = "Custom CNN Model"
         self.input_channels = input_channels
         self.conv1 = nn.Conv2d(in_channels=input_channels, out_channels=input_channels * 8, kernel_size=(3,3), padding="same")
         self.conv2 = nn.Conv2d(in_channels=input_channels * 8, out_channels=input_channels * 16, kernel_size=(3,3), padding="same")
@@ -57,8 +58,9 @@ class ObjectDetectionCNN(nn.Module):
 class ObjectDetectionVGG(nn.Module):
     def __init__(self, input_channels, n_classes):
         super(ObjectDetectionVGG, self).__init__()
+        self.name = "VGG-19 Model"
         self.input_proj = nn.Conv2d(input_channels, 3, kernel_size=(3,3), padding="same")
-        self.vgg = models.vgg19(pretrained=True)
+        self.vgg19 = models.vgg19(pretrained=True)
         self.vgg19.classifier[6] = nn.Linear(self.vgg19.classifier[6].in_features, n_classes)
         
         for param in self.vgg19.features.parameters():
@@ -73,7 +75,7 @@ class ObjectDetectionVGG(nn.Module):
 
     def forward(self, image):
         image = self.input_proj(image)
-
+        image = self.vgg19(image)
         category = self.softmax(image)
         bbox = self.relu(self.fc_bbox(image))
 

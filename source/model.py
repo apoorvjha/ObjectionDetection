@@ -106,6 +106,7 @@ class ObjectDetectionViT(nn.Module):
         self.fc_bbox = nn.Linear(embed_dim, 4)
         self.softmax = nn.Softmax(dim=1)
         self.relu = nn.ReLU()
+        self.name = "ViT Model"
 
     def forward(self, x):
         # Patch embedding

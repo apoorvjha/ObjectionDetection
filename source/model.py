@@ -90,7 +90,7 @@ class ObjectDetectionViT(nn.Module):
         self.embed_dim = embed_dim
 
         # Patch embedding
-        self.patch_embedding = nn.Conv2d(in_channels=3, out_channels=embed_dim, kernel_size=patch_size, stride=patch_size)
+        self.patch_embedding = nn.Conv2d(in_channels=1, out_channels=embed_dim, kernel_size=patch_size, stride=patch_size)
 
         # Positional encoding
         self.position_embedding = nn.Parameter(torch.zeros(1, self.num_patches, embed_dim))

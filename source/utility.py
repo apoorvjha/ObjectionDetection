@@ -8,6 +8,19 @@ import cv2
 import numpy as np
 import runtime_parameters 
 
+import torch
+import random
+import numpy as np
+
+def set_seed(seed):
+    random.seed(seed)  # Set Python random seed
+    np.random.seed(seed)  # Set NumPy random seed
+    torch.manual_seed(seed)  # Set seed for CPU
+    torch.cuda.manual_seed(seed)  # Set seed for current GPU
+    torch.cuda.manual_seed_all(seed)  # Set seed for all GPUs (if you have multiple)
+    torch.backends.cudnn.deterministic = True  # Make CuDNN deterministic
+    torch.backends.cudnn.benchmark = False  # Disable the benchmark to ensure reproducibility
+
 def read_mat_file(file_name):
     mat = scipy.io.loadmat(file_name)
     return mat

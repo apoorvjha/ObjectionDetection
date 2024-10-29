@@ -7,6 +7,7 @@ from model import *
 from model_evaluator import *
 
 if __name__ == "__main__":
+    set_seed(42)
     image_annotation_mapping = get_image_annot_mapping()
     train_data, validation_data, test_data = train_test_split(image_annotation_mapping, stratify = runtime_parameters.label_column_name)
     print("Data Size : ", image_annotation_mapping.shape)

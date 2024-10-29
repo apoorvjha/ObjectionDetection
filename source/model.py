@@ -81,5 +81,47 @@ class ObjectDetectionVGG(nn.Module):
 
         return bbox, category
 
+class ObjectDetectionViT(nn.Module):
+    def __init__(self, num_classes, img_size=128, patch_size=16, embed_dim=256, num_heads=8, num_layers=6, ff_dim=512):
+        super(ObjectDetectionViT, self).__init__()
+
+        self.patch_size = patch_size
+        self.num_patches = (img_size // patch_size) ** 2
+        self.embed_dim = embed_dim
+
+        # Patch embedding
+        self.patch_embedding = nn.Conv2d(in_channels=3, out_channels=embed_dim, kernel_size=patch_size, stride=patch_size)
+
+        # Positional encoding
+        self.position_embedding = nn.Parameter(torch.zeros(1, self.num_patches, embed_dim))
+
+        # Transformer blocks
+        self.transformer_blocks = nn.ModuleList([
+            nn.TransformerEncoderLayer(d_model=embed_dim, nhead=num_heads, dim_feedforward=ff_dim) for _ in range(num_layers)
+        ])
+
+        # Output head
+        self.global_avg_pool = nn.AdaptiveAvgPool1d(1)
+        self.fc = nn.Linear(embed_dim, num_classes)
+        self.fc_bbox = nn.Linear(embed_dim, 4)
+        self.softmax = nn.Softmax(dim=1)
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        # Patch embedding
+        x = self.patch_embedding(x)  # Shape: (batch_size, embed_dim, h, w)
+        x = x.flatten(2).transpose(1, 2)  # Shape: (batch_size, num_patches, embed_dim)
+        x += self.position_embedding  # Add positional encoding
+
+        # Pass through transformer blocks
+        for transformer in self.transformer_blocks:
+            x = transformer(x)
+
+        # Global average pooling and final classification
+        x = self.global_avg_pool(x.transpose(1, 2))  # Shape: (batch_size, embed_dim, 1)
+        x = x.squeeze(-1)  # Shape: (batch_size, embed_dim)
+        category = self.softmax(self.fc(x))  # Shape: (batch_size, num_classes)
+        bbox = self.relu(self.fc_bbox(x))
+        return bbox, category
 
 

@@ -3,6 +3,8 @@ import runtime_parameters
 from loss_function import *
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 def evaluate(model, test_data, num_classes):
     loss_fn = ObjectDetectionLoss(num_classes, runtime_parameters.lambda_box, runtime_parameters.lambda_cls)
@@ -43,9 +45,9 @@ def evaluate(model, test_data, num_classes):
     # Evaluation Metrics ...
     average_loss = sum(running_loss_test) / count
     # Calculate precision, recall, and F1 score for each class
-    precision_per_class = precision_score(actual_labels, predicted_labels, average=None)
-    recall_per_class = recall_score(actual_labels, predicted_labels, average=None)
-    f1_per_class = f1_score(actual_labels, predicted_labels, average=None)
+    # precision_per_class = precision_score(actual_labels, predicted_labels, average=None)
+    # recall_per_class = recall_score(actual_labels, predicted_labels, average=None)
+    # f1_per_class = f1_score(actual_labels, predicted_labels, average=None)
     
     # Calculate micro and macro averages
     precision_macro = precision_score(actual_labels, predicted_labels, average='macro')
@@ -58,9 +60,9 @@ def evaluate(model, test_data, num_classes):
 
     print(f"\n\n========================== EVALUATION OF {model_name} ===========================\n")
     print("Average Loss : ", average_loss)
-    print("Precision Per Class : ", precision_per_class)
-    print("Recall Per Class : ", recall_per_class)
-    print("F1 Score Per Class : ", f1_per_class)
+    # print("Precision Per Class : ", precision_per_class)
+    # print("Recall Per Class : ", recall_per_class)
+    # print("F1 Score Per Class : ", f1_per_class)
 
     print("Precision Macro : ", precision_macro)
     print("Recall Macro : ", recall_macro)
@@ -69,5 +71,9 @@ def evaluate(model, test_data, num_classes):
     print("Precision Micro : ", precision_micro)
     print("Recall Micro : ", recall_micro)
     print("F1 Score Micro : ", f1_micro)
+
+    cosine_similarity_val = cosine_similarity(actual_bboxes, predicted_bboxes)
+    cosine_similarity_val = cosine_similarity_val[np.diag_indices(cosine_similarity_val.shape[0])]
+    print("Cosine Similarity of BBox : ", sum(cosine_similarity_val) / cosine_similarity_val.shape[0])
     print("\n=======================================================================================\n\n") 
 

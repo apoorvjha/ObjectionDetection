@@ -86,8 +86,10 @@ class ObjectDetectionVGG(nn.Module):
         return bbox, category
 
 class ObjectDetectionViT(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self, input_channels, num_classes):
         super(ObjectDetectionViT, self).__init__()
+        if runtime_parameters.image_channels != 3:
+            self.input_proj = nn.Conv2d(input_channels, 3, kernel_size=(3,3), padding="same")
         self.model = vit_b_16(pretrained=True)
         # Replace the head for category probabilities
         self.model.heads.head = nn.Linear(self.model.heads.head.in_features, num_classes)
@@ -97,6 +99,8 @@ class ObjectDetectionViT(nn.Module):
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
+        if runtime_parameters.image_channels != 3:
+            x = self.input_proj(x)
         # Extract features
         features = self.model(x)
         # Category probabilities

@@ -42,12 +42,12 @@ if __name__ == "__main__":
     test_dataloader = DataLoader(test_dataset, batch_size=runtime_parameters.batch_size, shuffle=False)
     print("Catgories : ", len(onehot_encoder.categories_[0]))
     
-    object_detection_model = ObjectDetectionCNN(1, len(onehot_encoder.categories_[0]))
+    object_detection_model = ObjectDetectionCNN(runtime_parameters.image_channels, len(onehot_encoder.categories_[0]))
     object_detection_model, history = train(object_detection_model, train_dataloader, validation_dataloader, len(onehot_encoder.categories_[0]))
     plot_loss(history, "CNN_Loss_Plt.jpg")
     evaluate(object_detection_model,test_dataloader,len(onehot_encoder.categories_[0]))
 
-    object_detection_model = ObjectDetectionVGG(1, len(onehot_encoder.categories_[0]))
+    object_detection_model = ObjectDetectionVGG(runtime_parameters.image_channels, len(onehot_encoder.categories_[0]))
     object_detection_model, history = train(object_detection_model, train_dataloader, validation_dataloader, len(onehot_encoder.categories_[0]))
     plot_loss(history, "VGG_Loss_Plt.jpg")
     evaluate(object_detection_model,test_dataloader,len(onehot_encoder.categories_[0]))

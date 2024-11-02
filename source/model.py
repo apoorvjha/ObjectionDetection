@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torchvision import models
+import runtime_parameters
 from torchvision.models import vit_b_16
 
 class ObjectDetectionCNN(nn.Module):
@@ -60,7 +61,8 @@ class ObjectDetectionVGG(nn.Module):
     def __init__(self, input_channels, n_classes):
         super(ObjectDetectionVGG, self).__init__()
         self.name = "VGG-19 Model"
-        self.input_proj = nn.Conv2d(input_channels, 3, kernel_size=(3,3), padding="same")
+        if runtime_parameters.image_channels != 3:
+            self.input_proj = nn.Conv2d(input_channels, 3, kernel_size=(3,3), padding="same")
         self.vgg19 = models.vgg19(pretrained=True)
         self.vgg19.classifier[6] = nn.Linear(self.vgg19.classifier[6].in_features, n_classes)
         
@@ -75,7 +77,8 @@ class ObjectDetectionVGG(nn.Module):
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, image):
-        image = self.input_proj(image)
+        if runtime_parameters.image_channels != 3:
+            image = self.input_proj(image)
         image = self.vgg19(image)
         category = self.softmax(image)
         bbox = self.relu(self.fc_bbox(image))

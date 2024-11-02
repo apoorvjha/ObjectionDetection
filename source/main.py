@@ -52,7 +52,7 @@ if __name__ == "__main__":
     plot_loss(history, "VGG_Loss_Plt.jpg")
     evaluate(object_detection_model,test_dataloader,len(onehot_encoder.categories_[0]))
 
-    object_detection_model = ObjectDetectionViT(len(onehot_encoder.categories_[0]), img_size=runtime_parameters.resize_shape[0], patch_size=runtime_parameters.patch_size, embed_dim=runtime_parameters.embed_dim, num_heads=runtime_parameters.n_heads, num_layers=runtime_parameters.n_layers, ff_dim=runtime_parameters.ff_dim)
+    object_detection_model = ObjectDetectionViT(len(onehot_encoder.categories_[0]))
     object_detection_model, history = train(object_detection_model, train_dataloader, validation_dataloader, len(onehot_encoder.categories_[0]))
     plot_loss(history, "ViT_Loss_Plt.jpg")
     evaluate(object_detection_model,test_dataloader,len(onehot_encoder.categories_[0]))

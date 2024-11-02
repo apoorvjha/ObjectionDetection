@@ -1,8 +1,8 @@
 import torch
 
 resize_shape = (224,224)
-image_channels = 3
-convert2gray = False
+image_channels = 1
+convert2gray = True
 apply_smoothing = True
 contrast_streching = True
 gaussian_kernel_size = (5, 5)

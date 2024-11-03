@@ -88,6 +88,7 @@ class ObjectDetectionVGG(nn.Module):
 class ObjectDetectionViT(nn.Module):
     def __init__(self, input_channels, num_classes):
         super(ObjectDetectionViT, self).__init__()
+        self.name = "ViT Model"
         if runtime_parameters.image_channels != 3:
             self.input_proj = nn.Conv2d(input_channels, 3, kernel_size=(3,3), padding="same")
         self.model = vit_b_16(pretrained=True)

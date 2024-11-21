@@ -21,7 +21,7 @@ class ObjectDetectionCNN(nn.Module):
         self.conv7 = nn.Conv2d(in_channels=input_channels * 256, out_channels=input_channels * 512, kernel_size=(3,3), padding="same")
         self.conv8 = nn.Conv2d(in_channels=input_channels * 512, out_channels=input_channels * 1024, kernel_size=(3,3), padding="same")
         self.pool4 = nn.MaxPool2d(kernel_size = (2,2)) # 28 X 28 -> 14 X 14
-        self.fc1 = nn.Linear(1024 * 14 * 14, 1024)
+        self.fc1 = nn.Linear(input_channels * 1024 * 14 * 14, 1024)
         self.fc2 = nn.Linear(1024, 256)
         self.fc_cls = nn.Linear(256, n_classes)
         self.fc3 = nn.Linear(256, 64)

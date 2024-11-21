@@ -16,7 +16,7 @@ def evaluate(model, test_data, num_classes):
     predicted_bboxes = []
     predicted_labels = []
     count = 0
-    
+    model.eval()
     for idx, data in enumerate(test_data):
         image = data["image"].to(device = runtime_parameters.device)
         bbox = data["bbox"].to(device = runtime_parameters.device)

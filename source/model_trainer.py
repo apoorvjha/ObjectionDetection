@@ -16,6 +16,7 @@ def train(model, train_data, validation_data, num_classes):
             break
         running_loss_train = 0.0
         count = 0
+        model.train()
         for idx, data in enumerate(train_data):
             image = data["image"].to(device = runtime_parameters.device)
             bbox = data["bbox"].to(device = runtime_parameters.device)
@@ -40,6 +41,7 @@ def train(model, train_data, validation_data, num_classes):
 
         running_loss_val = 0.0
         count = 0
+        model.eval()
         for idx, data in enumerate(validation_data):
             image = data["image"].to(device = runtime_parameters.device)
             bbox = data["bbox"].to(device = runtime_parameters.device)

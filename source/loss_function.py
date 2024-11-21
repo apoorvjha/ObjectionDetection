@@ -28,6 +28,7 @@ class ObjectDetectionLoss(nn.Module):
         # Calculate losses
         box_loss = self.iou_loss(boxes_pred, boxes_target).mean()
         cls_loss = self.cross_entropy_loss(labels_pred, labels_target)
+        print("[Loss Module] DEBUG -----------> ", box_loss, cls_loss)
 
         # Combine losses
         total_loss = self.lambda_box * box_loss + self.lambda_cls * cls_loss

@@ -27,7 +27,7 @@ class ObjectDetectionLoss(nn.Module):
     def forward(self, boxes_pred, boxes_target, labels_pred, labels_target):
         # Calculate losses
         box_loss = self.iou_loss(boxes_pred, boxes_target).mean()
-        cls_loss_raw = self.cross_entropy_loss(labels_pred, labels_target).item()
+        cls_loss_raw = self.cross_entropy_loss(labels_pred, labels_target)
         cls_loss = 1 / (1 + torch.exp(-1 * cls_loss_raw))
         # print("[Loss Module] DEBUG -----------> ", box_loss, cls_loss)
 

@@ -4,5 +4,6 @@ caltech-101/caltech-101/*.tar*
 caltech-101/caltech-101/*.m
 source/*.jpg
 source/*.png
+source/*.ipynb*
 source/__pycache__
 object_detection_env

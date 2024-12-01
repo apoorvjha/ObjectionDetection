@@ -3,6 +3,8 @@ import torch.nn as nn
 from torchvision import models
 import runtime_parameters
 from torchvision.models import vit_b_16
+from torchvision import models
+from torchvision.ops import RoIAlign
 
 class ObjectDetectionCNN(nn.Module):
     def __init__(self, input_channels, n_classes):
@@ -110,4 +112,47 @@ class ObjectDetectionViT(nn.Module):
         bounding_boxes = self.relu(self.bbox_head(features))
         return bounding_boxes, category_probabilities
 
+class FastRCNN(nn.Module):
+    def __init__(self, input_channels, n_classes, roi_output_size=(7, 7)):
+        super(FastRCNN, self).__init__()
+        self.name = "Fast R-CNN Model"
+        if runtime_parameters.image_channels != 3:
+            self.input_proj = nn.Conv2d(input_channels, 3, kernel_size=(3,3), padding="same")
+        self.backbone = models.resnet50(pretrained=True)  # Pretrained backbone for feature extraction
+        self.backbone = nn.Sequential(*list(self.backbone.children())[:-2])
+        self.n_classes = n_classes
+        self.roi_pool = RoIAlign(roi_output_size, spatial_scale=1.0, sampling_ratio=2)
+        
+        # Fully connected layers for classification and bounding box regression
+        feature_dim = self._get_feature_dim(roi_output_size, self.backbone)
+        self.fc1 = nn.Linear(feature_dim, 1024)
+        self.fc2 = nn.Linear(1024, 1024)
+        self.fc_cls = nn.Linear(1024, n_classes)
+        self.fc_bbox = nn.Linear(1024, 4)
 
+        self.relu = nn.ReLU()
+        self.softmax = nn.Softmax(dim=1)
+
+    def _get_feature_dim(self, roi_output_size, backbone):
+        dummy_input = torch.randn(1, 3, 224, 224)
+        dummy_features = backbone(dummy_input)
+        roi_output = self.roi_pool(dummy_features, [torch.tensor([[0, 0, 224, 224]], dtype = torch.float32)])
+        return roi_output.numel()
+
+    def forward(self, images, rois):
+        if runtime_parameters.image_channels != 3:
+            images = self.input_proj(images)
+        # Feature extraction using the backbone
+        features = self.backbone(images)
+        
+        # Apply RoI pooling
+        pooled_features = self.roi_pool(features, rois)
+        pooled_features = pooled_features.view(pooled_features.size(0), -1)
+
+        # Classification and bounding box regression
+        x = self.relu(self.fc1(pooled_features))
+        x = self.relu(self.fc2(x))
+        cls_logits = self.softmax(self.fc_cls(x))
+        bbox_regression = self.fc_bbox(x)
+
+        return bbox_regression, cls_logits

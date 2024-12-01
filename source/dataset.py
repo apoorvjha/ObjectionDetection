@@ -16,7 +16,7 @@ class Dataset:
         image_path = self.data[self.image_path_column].iloc[idx]
         annotation_path = self.data[self.annotation_path_column].iloc[idx]
         image, bbox = read_image(image_path, annotation_path, preprocess_image = True)
-        image = image/255
+        image = image / 255
         label = self.data[self.label_column].iloc[idx]
         return {
             "image" : torch.tensor(image, dtype = torch.float32),

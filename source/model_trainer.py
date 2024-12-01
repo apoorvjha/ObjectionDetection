@@ -26,7 +26,7 @@ def train(model, train_data, validation_data, num_classes):
             rois = []
             for img in image:
                 rois.append([0, 0 , img.shape[0], img.shape[1]])
-            bbox_prediction, label_prediction = model(image, [torch.tensor(rois, dtype = torch.float32)])
+            bbox_prediction, label_prediction = model(image, [torch.tensor(rois, dtype = torch.float32).to(device = runtime_parameters.device)])
 
             loss = loss_fn(bbox_prediction, bbox, label_prediction, label)
             running_loss_train += loss.item()
@@ -53,7 +53,7 @@ def train(model, train_data, validation_data, num_classes):
                 rois = []
                 for img in image:
                     rois.append([0, 0 , img.shape[0], img.shape[1]])
-                bbox_prediction, label_prediction = model(image, [torch.tensor(rois, dtype = torch.float32)])
+                bbox_prediction, label_prediction = model(image, [torch.tensor(rois, dtype = torch.float32).to(device = runtime_parameters.device)])
 
                 loss = loss_fn(bbox_prediction, bbox, label_prediction, label)
                 running_loss_val += loss.item()

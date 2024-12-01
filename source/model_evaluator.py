@@ -23,10 +23,10 @@ def evaluate(model, test_data, num_classes):
         label = data["label"].to(device = runtime_parameters.device)
 
         with torch.no_grad():
-            rois = []
-            for img in image:
-                rois.append([0, 0 , img.shape[0], img.shape[1]])
-            bbox_prediction, label_prediction = model(image, [torch.tensor(rois, dtype = torch.float32).to(device = runtime_parameters.device)])
+            # rois = []
+            # for img in image:
+            #     rois.append([0, 0 , img.shape[0], img.shape[1]])
+            bbox_prediction, label_prediction = model(image)#, [torch.tensor(rois, dtype = torch.float32).to(device = runtime_parameters.device)])
 
             actual_label = torch.argmax(label, dim=1).cpu().numpy()
             predicted_label = torch.argmax(label_prediction, dim = 1).cpu().numpy()
